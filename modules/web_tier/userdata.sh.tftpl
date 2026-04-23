@@ -1,3 +1,65 @@
-
 #!/bin/bash
-# TODO: install and start nginx, then render a default page
+set -euo pipefail
+
+ENABLE_CONTAINER="${enable_container}"
+CONTAINER_IMAGE="${container_image}"
+CONTAINER_PORT="${container_port}"
+
+log() { echo "[$(date -Is)] $*"; }
+
+log "Bootstrapping web tier..."
+
+# Detect OS package manager (Amazon Linux 2023 uses dnf)
+if command -v dnf >/dev/null 2>&1; then
+  PKG=dnf
+elif command -v yum >/dev/null 2>&1; then
+  PKG=yum
+elif command -v apt-get >/dev/null 2>&1; then
+  PKG=apt-get
+else
+  log "No supported package manager found."
+  exit 1
+fi
+
+if [ "$ENABLE_CONTAINER" = "true" ]; then
+  log "Container mode enabled."
+
+  # Install Docker (best-effort across distros)
+  if [ "$PKG" = "apt-get" ]; then
+    apt-get update -y
+    apt-get install -y docker.io
+    systemctl enable --now docker
+  else
+    $PKG install -y docker
+    systemctl enable --now docker
+  fi
+
+  # Pull & run container idempotently
+  if [ -z "$CONTAINER_IMAGE" ]; then
+    log "container_image is empty but enable_container=true"
+    exit 1
+  fi
+
+  docker pull "$CONTAINER_IMAGE"
+
+  if docker ps -a --format '{{.Names}}' | grep -q '^web$'; then
+    log "Container 'web' exists, replacing..."
+    docker rm -f web || true
+  fi
+
+  docker run -d --restart=always --name web -p 80:${CONTAINER_PORT} "$CONTAINER_IMAGE"
+
+else
+  log "NGINX mode enabled."
+
+  if [ "$PKG" = "apt-get" ]; then
+    apt-get update -y
+    apt-get install -y nginx
+    systemctl enable --now nginx
+  else
+    $PKG install -y nginx
+    systemctl enable --now nginx
+  fi
+fi
+
+log "Bootstrap completed."
