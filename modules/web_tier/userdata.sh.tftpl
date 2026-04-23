@@ -47,7 +47,7 @@ if [ "$ENABLE_CONTAINER" = "true" ]; then
     docker rm -f web || true
   fi
 
-  docker run -d --restart=always --name web -p 80:${CONTAINER_PORT} "$CONTAINER_IMAGE"
+  docker run -d --restart=always --name web -p 80:$${CONTAINER_PORT} "$CONTAINER_IMAGE"
 
 else
   log "NGINX mode enabled."
