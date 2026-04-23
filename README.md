@@ -40,6 +40,7 @@ Auto-healing web tier built with Terraform on AWS, featuring N+1 redundancy and 
 
 **Prerequisites:** Terraform v1.11.1+, AWS CLI configured
 
+**CI note:** This repository does NOT include AWS credentials for GitHub Actions. The workflow will fail 
 ```bash
 # Navigate to environment
 cd environments/dev
