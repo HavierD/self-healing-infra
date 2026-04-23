@@ -1,0 +1,44 @@
+
+# Terraform state
+*.tfstate
+*.tfstate.*
+
+
+# Local Terraform working directory
+.terraform/
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Terraform overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+
+
+# Cloud credentials
+.env
+.env.*
+*.pem
+*.key
+*.crt
+
+# OS / IDEs
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Ignore generated diagrams, but allow source
+diagrams/*.tmp
+diagrams/*.drawio.bkp
