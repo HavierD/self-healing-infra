@@ -18,10 +18,10 @@ module "web_tier" {
   vpc_id     = module.network.vpc_id
   subnet_ids = module.network.public_subnet_ids
 
-  instance_type     = var.instance_type
-  desired_capacity  = 2
-  min_size          = 2
-  max_size          = 4
+  instance_type    = var.instance_type
+  desired_capacity = 2
+  min_size         = 2
+  max_size         = 4
 
   enable_container = var.enable_container
   container_image  = var.container_image
